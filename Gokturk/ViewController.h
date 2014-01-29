@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+#import <CoreLocation/CoreLocation.h>
 
+@interface ViewController : UIViewController <CLLocationManagerDelegate, NSURLConnectionDelegate, UITextFieldDelegate> {
+    CLLocationManager *locationManager;
+    NSMutableData *_responseData;
+    UITextField *textField;
+}
 @end

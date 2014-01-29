@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6304AEF11891B504005EBE4D /* Astronomy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6304AEF01891B504005EBE4D /* Astronomy.m */; };
 		63380679188488460025D394 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63380678188488460025D394 /* Foundation.framework */; };
 		6338067B188488460025D394 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6338067A188488460025D394 /* CoreGraphics.framework */; };
 		6338067D188488460025D394 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6338067C188488460025D394 /* UIKit.framework */; };
@@ -21,6 +22,7 @@
 		6338069A188488470025D394 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6338067C188488460025D394 /* UIKit.framework */; };
 		633806A2188488470025D394 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 633806A0188488470025D394 /* InfoPlist.strings */; };
 		633806A4188488470025D394 /* GokturkTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 633806A3188488470025D394 /* GokturkTests.m */; };
+		635AD25918917B14000BB64D /* Observer.m in Sources */ = {isa = PBXBuildFile; fileRef = 635AD25818917B14000BB64D /* Observer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6304AEEF1891B504005EBE4D /* Astronomy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Astronomy.h; sourceTree = "<group>"; };
+		6304AEF01891B504005EBE4D /* Astronomy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Astronomy.m; sourceTree = "<group>"; };
 		63380675188488460025D394 /* Gokturk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gokturk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63380678188488460025D394 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6338067A188488460025D394 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -53,6 +57,8 @@
 		6338069F188488470025D394 /* GokturkTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GokturkTests-Info.plist"; sourceTree = "<group>"; };
 		633806A1188488470025D394 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		633806A3188488470025D394 /* GokturkTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GokturkTests.m; sourceTree = "<group>"; };
+		635AD25718917B14000BB64D /* Observer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Observer.h; sourceTree = "<group>"; };
+		635AD25818917B14000BB64D /* Observer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Observer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +122,10 @@
 				63380688188488460025D394 /* AppDelegate.m */,
 				6338068A188488460025D394 /* Main.storyboard */,
 				6338068D188488460025D394 /* ViewController.h */,
+				635AD25718917B14000BB64D /* Observer.h */,
+				635AD25818917B14000BB64D /* Observer.m */,
+				6304AEEF1891B504005EBE4D /* Astronomy.h */,
+				6304AEF01891B504005EBE4D /* Astronomy.m */,
 				6338068E188488460025D394 /* ViewController.m */,
 				63380690188488460025D394 /* Images.xcassets */,
 				6338067F188488460025D394 /* Supporting Files */,
@@ -250,8 +260,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				6338068F188488460025D394 /* ViewController.m in Sources */,
+				635AD25918917B14000BB64D /* Observer.m in Sources */,
 				63380689188488460025D394 /* AppDelegate.m in Sources */,
 				63380685188488460025D394 /* main.m in Sources */,
+				6304AEF11891B504005EBE4D /* Astronomy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,6 +393,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Gokturk/Gokturk-Prefix.pch";
 				INFOPLIST_FILE = "Gokturk/Gokturk-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -394,6 +407,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Gokturk/Gokturk-Prefix.pch";
 				INFOPLIST_FILE = "Gokturk/Gokturk-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -460,6 +474,7 @@
 				633806A9188488470025D394 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		633806AA188488470025D394 /* Build configuration list for PBXNativeTarget "GokturkTests" */ = {
 			isa = XCConfigurationList;
@@ -468,6 +483,7 @@
 				633806AC188488470025D394 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
