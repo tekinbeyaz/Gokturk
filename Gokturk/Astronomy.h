@@ -12,6 +12,6 @@
 @interface Astronomy : NSObject
 -(NSString *) sunSet :(Observer *) observer andDate:(NSDate *) date andZenith:(double) newZenith;
 -(NSString *) sunRise : (Observer *) observer andDate:(NSDate *) date andZenith:(double) newZenith;
-+(NSString *) calculate : (Observer *) observer andDate:(NSDate *) date andZenith:(double) newZenith andSetOrRise:(BOOL) setOrRise;
+
 //setOrRise : True for Set, False for Rise
 @end

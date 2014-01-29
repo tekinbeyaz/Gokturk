@@ -14,15 +14,18 @@
 
 
 @interface ViewController ()
-@property (weak, nonatomic) IBOutlet UITextField *latText;
-@property (weak, nonatomic) IBOutlet UITextField *lonText;
-@property (weak, nonatomic) IBOutlet UIButton *calculateBtn;
-@property (weak, nonatomic) IBOutlet UISlider *gmtSlider;
-@property (weak, nonatomic) IBOutlet UILabel *gmtLabel;
-@property (weak, nonatomic) IBOutlet UISwitch *DSTSwitch;
-@property (weak, nonatomic) IBOutlet UIButton *getPosition;
-@property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
+@property (strong, nonatomic) IBOutlet UILabel *timeZoneNameText;
+@property (strong, nonatomic) IBOutlet UILabel *sunriseText;
+@property (strong, nonatomic) IBOutlet UILabel *officalText;
+@property (strong, nonatomic) IBOutlet UILabel *civilText;
+@property (strong, nonatomic) IBOutlet UILabel *nauticalText;
+@property (strong, nonatomic) IBOutlet UILabel *astonomicalText;
+@property (strong, nonatomic) IBOutlet UILabel *sunsetText;
+@property (strong, nonatomic) IBOutlet UILabel *locationText;
+
+
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (nonatomic, strong) CLGeocoder *myGeocoder;
 @property double latitude;
 @property double longitude;
 @property int rawOffset;
@@ -36,52 +39,8 @@
 @end
 
 @implementation ViewController
-- (IBAction)getPosition:(id)sender {
-    /* We need a location */
-        [locationManager startUpdatingLocation];
 
 
-}
-
-- (IBAction)gmtUpdate:(id)sender {
-    _gmtSlider.value = (int) _gmtSlider.value;
-    _gmtLabel.text = [NSString stringWithFormat:@"%i Hours.", (int)_gmtSlider.value];
-}
-
-- (IBAction)calculate:(id)sender {
-   
-    //Create Observer instance
-    _observer = [[Observer alloc] init];
-    if (!_hasRecievedLocation) {
-        _latitude = [_latText.text floatValue];
-        _longitude = [_lonText.text floatValue];
-        _rawOffset = _gmtSlider.value;
-        if (_DSTSwitch.on) {
-            _dstOffset = 1;
-        } else {
-            _dstOffset = 0;
-        }
-    }
-    [_observer createObserverWithLatitude:_latitude andLongitude:_longitude andHeading:180
-                             andTimeZoneId:_timeZoneId andTimeZoneName:_timeZoneName
-                             andDSTOffset:_dstOffset andRawOffset:_rawOffset];
-    NSDate *date = _datePicker.date;
-    Astronomy *astronomy = [[Astronomy alloc] init];
-    NSString *sunSet = [astronomy sunSet:_observer andDate:date andZenith:_zenith_offical];
-    NSString *sunRise = [astronomy sunRise:_observer andDate:date andZenith:_zenith_offical];
-    
-    NSString *message = [@"Sun Rise : " stringByAppendingString:sunRise];
-    message = [message stringByAppendingString:@"\n"];
-    message = [message stringByAppendingString:@"Sun Set : "];
-    message = [message stringByAppendingString:sunSet];
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Sun Times" message:message delegate:self cancelButtonTitle:nil otherButtonTitles:@"Okay", nil];
-    
-    [alertView show];
-    _gmtSlider.enabled = YES;
-    _DSTSwitch.enabled = YES;
-    _hasRecievedLocation = NO;
-
-}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -92,17 +51,16 @@
     locationManager = [[CLLocationManager alloc] init];
     locationManager.delegate = self;
     locationManager.distanceFilter = kCLDistanceFilterNone;
-    locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
+    
+    
+    [locationManager startUpdatingLocation];
     
     _zenith_offical = 90.833;
     _zenith_civil   = 96;
     _zenith_nautical = 102;
     _zenith_astronomical = 108;
-    textField = _lonText;
-    [_lonText setReturnKeyType:UIReturnKeyDone];
-    [_latText setReturnKeyType:UIReturnKeyDone];
-    self.lonText.delegate = self;
-    self.latText.delegate = self;
+    
+
     
     _hasRecievedLocation = NO;
     
@@ -121,8 +79,11 @@
     
     _latitude = (double) newLocation.coordinate.latitude;
     _longitude = (double) newLocation.coordinate.longitude;
-    _latText.text = [NSString stringWithFormat:@"%f", _latitude];
-    _lonText.text = [NSString stringWithFormat:@"%f", _longitude];
+    NSString *latitudeText = [NSString stringWithFormat:@"%f", _latitude];
+    NSString *longitudeText = [NSString stringWithFormat:@"%f", _longitude];
+    
+    NSLog(@"Latitude : %f", _latitude);
+    NSLog(@"Longitude : %f", _longitude);
     _hasRecievedLocation = YES;
     
     /* We should retrieve UTC Offset and DST */
@@ -130,16 +91,17 @@
     
     NSString *urlAsString = @"https://maps.googleapis.com/maps/api/timezone/json";
     urlAsString = [urlAsString stringByAppendingString:@"?location="];
-    urlAsString = [urlAsString stringByAppendingString:_latText.text];
+    urlAsString = [urlAsString stringByAppendingString:latitudeText];
     urlAsString = [urlAsString stringByAppendingString:@","];
-    urlAsString = [urlAsString stringByAppendingString:_lonText.text];
+    urlAsString = [urlAsString stringByAppendingString:longitudeText];
     urlAsString = [urlAsString stringByAppendingString:@"&timestamp="];
     
     /* Calculate timestamp */
     
     NSDate *date;
     date = [[NSDate alloc] init];
-    date = _datePicker.date;
+
+    NSLog(@"Date : %@", date);
     int timestamp;
     timestamp = (int)[date timeIntervalSince1970];
     
@@ -161,10 +123,30 @@
 
 
     
-    //We had a location, so we dont need this.
+    
+    //Create Observer instance
+    _observer = [[Observer alloc] init];
+    
+    [_observer createObserverWithLatitude:_latitude andLongitude:_longitude andHeading:180
+                            andTimeZoneId:_timeZoneId andTimeZoneName:_timeZoneName
+                             andDSTOffset:_dstOffset andRawOffset:_rawOffset];
+    
+    Astronomy *astronomy = [[Astronomy alloc] init];
+    
+
+    NSString *sunSetOffical = [astronomy sunSet:_observer andDate:date andZenith:_zenith_offical];
+    NSString *sunRise = [astronomy sunRise:_observer andDate:date andZenith:_zenith_offical];
+    NSString *sunSetCivil = [astronomy sunSet:_observer andDate:date andZenith:_zenith_civil];
+    NSString *sunSetNautical = [astronomy sunSet:_observer andDate:date andZenith:_zenith_nautical];
+    NSString *sunSetAstronomical = [astronomy sunSet:_observer andDate:date andZenith:_zenith_astronomical];
+
+    _sunriseText.text = sunRise;
+    _officalText.text = sunSetOffical;
+    _civilText.text = sunSetCivil;
+    _nauticalText.text = sunSetNautical;
+    _astonomicalText.text = sunSetAstronomical;
+    
     [locationManager stopUpdatingLocation];
-    
-    
     
 }
 
@@ -210,30 +192,43 @@
             _timeZoneName = [deserializedDictionary valueForKey:@"timeZoneName"];
             _dstOffset = [dstOff intValue];
             
+            
+            NSLog(@"Time Zone Name : %@", _timeZoneId);
             _rawOffset = [rawOff intValue];
             _rawOffset /= 3600;
             _dstOffset /= 3600;
-            _gmtSlider.value = _rawOffset;
-            
-            if (_dstOffset>0) {
-                [_DSTSwitch setOn:YES animated:YES];
+            _timeZoneId = [_timeZoneId stringByAppendingString:@"\n"];
+            _timeZoneNameText.text = [_timeZoneId stringByAppendingString:_timeZoneName];
 
-                
-            } else {
-                [_DSTSwitch setOn:NO animated:YES];
-            }
-
-            _DSTSwitch.enabled = NO;
-        }
     }
-    _gmtLabel.text = [NSString stringWithFormat:@"%i Hours.", _rawOffset];
-    _gmtSlider.enabled = NO;
+
+        //Get the address.
+        CLLocation *location = [[CLLocation alloc] initWithLatitude:_latitude longitude:_longitude];
+        self.myGeocoder = [[CLGeocoder alloc] init];
+        [self.myGeocoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error)
+         {
+             if (error==nil && placemarks.count > 0) {
+                 CLPlacemark *placemark = placemarks[0];
+                 // We recieved the result
+                 NSString *locationAddress = placemark.name;
+                 locationAddress = [locationAddress stringByAppendingString:@"\n"];
+                 locationAddress = [locationAddress stringByAppendingString:placemark.locality];
+                 locationAddress = [locationAddress stringByAppendingString:@"\n"];
+                 locationAddress = [locationAddress stringByAppendingString:placemark.country];
+                 
+                 _locationText.text = locationAddress;
+                 
+             } else { }
+         }];
+        
     [_spinner stopAnimating];
+}
+    
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     // The request has failed for some reason!
-    // Check the error var
+    // Check the error variable
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Connection Error."
                                                         message:@"Error retrieving data from Google API. You should set values by hand."
@@ -242,13 +237,6 @@
                                               otherButtonTitles:@"Okay", nil];
     [alertView show];
     [_spinner stopAnimating];
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    [_lonText resignFirstResponder];
-    [_latText resignFirstResponder];
-    return YES;
 }
 @end
 
