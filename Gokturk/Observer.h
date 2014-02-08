@@ -18,6 +18,6 @@
 @property NSString *timeZoneId;
 @property NSString *timeZoneName;
 
--(void) createObserverWithLatitude:(double) newLatitude andLongitude:(double) newLongitude andHeading:(int) newHeading andTimeZoneId:(NSString *) newTimeZoneId andTimeZoneName:(NSString *) newTimeZoneName andDSTOffset:(double) newDSTOffset andRawOffset:(double)newRawOffset ;
+-(void) createObserverWithLatitude:(double) newLatitude andLongitude:(double) newLongitude andHeading:(int) newHeading andTimeZoneId:(NSString *) newTimeZoneId andTimeZoneName:(NSString *) newTimeZoneName andDSTOffset:(int) newDSTOffset andRawOffset:(int)newRawOffset ;
 
 @end

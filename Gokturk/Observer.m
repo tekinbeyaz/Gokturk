@@ -11,7 +11,7 @@
 @implementation Observer
 @synthesize latitude, longitude, heading, timeZoneId, timeZoneName, DSTOffset, rawOffset;
 
--(void) createObserverWithLatitude:(double) newLatitude andLongitude:(double) newLongitude andHeading:(int) newHeading andTimeZoneId:(NSString *) newTimeZoneId andTimeZoneName:(NSString *) newTimeZoneName andDSTOffset:(double) newDSTOffset andRawOffset:(double)newRawOffset {
+-(void) createObserverWithLatitude:(double) newLatitude andLongitude:(double) newLongitude andHeading:(int) newHeading andTimeZoneId:(NSString *) newTimeZoneId andTimeZoneName:(NSString *) newTimeZoneName andDSTOffset:(int) newDSTOffset andRawOffset:(int)newRawOffset {
     self.latitude = newLatitude;
     self.longitude = newLongitude;
     self.heading= newHeading;

@@ -36,6 +36,7 @@
 @property double zenith_offical, zenith_civil, zenith_nautical, zenith_astronomical;
 @property Observer *observer;
 @property BOOL hasRecievedLocation;
+@property NSDate *date;
 @end
 
 @implementation ViewController
@@ -98,12 +99,17 @@
     
     /* Calculate timestamp */
     
-    NSDate *date;
-    date = [[NSDate alloc] init];
+    _date = [[NSDate alloc] init];
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    
+    NSDateComponents *comps = [[NSDateComponents alloc] init];
+    [comps setHour:23];
 
-    NSLog(@"Date : %@", date);
+    _date = [calendar dateFromComponents:comps ];
+    
+    NSLog(@"Date : %@", _date);
     int timestamp;
-    timestamp = (int)[date timeIntervalSince1970];
+    timestamp = (int)[_date timeIntervalSince1970];
     
     
     
@@ -119,34 +125,9 @@
     [_spinner startAnimating];
     
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self];
+    
     [connection start];
-
-
-    
-    
-    //Create Observer instance
-    _observer = [[Observer alloc] init];
-    
-    [_observer createObserverWithLatitude:_latitude andLongitude:_longitude andHeading:180
-                            andTimeZoneId:_timeZoneId andTimeZoneName:_timeZoneName
-                             andDSTOffset:_dstOffset andRawOffset:_rawOffset];
-    
-    Astronomy *astronomy = [[Astronomy alloc] init];
-    
-
-    NSString *sunSetOffical = [astronomy sunSet:_observer andDate:date andZenith:_zenith_offical];
-    NSString *sunRise = [astronomy sunRise:_observer andDate:date andZenith:_zenith_offical];
-    NSString *sunSetCivil = [astronomy sunSet:_observer andDate:date andZenith:_zenith_civil];
-    NSString *sunSetNautical = [astronomy sunSet:_observer andDate:date andZenith:_zenith_nautical];
-    NSString *sunSetAstronomical = [astronomy sunSet:_observer andDate:date andZenith:_zenith_astronomical];
-
-    _sunriseText.text = sunRise;
-    _officalText.text = sunSetOffical;
-    _civilText.text = sunSetCivil;
-    _nauticalText.text = sunSetNautical;
-    _astonomicalText.text = sunSetAstronomical;
-    
-    [locationManager stopUpdatingLocation];
+        [locationManager stopUpdatingLocation];
     
 }
 
@@ -197,6 +178,8 @@
             _rawOffset = [rawOff intValue];
             _rawOffset /= 3600;
             _dstOffset /= 3600;
+            NSLog(@"Raw Offset : %i", _rawOffset);
+            NSLog(@"DST Offset : %i", _dstOffset);
             _timeZoneId = [_timeZoneId stringByAppendingString:@"\n"];
             _timeZoneNameText.text = [_timeZoneId stringByAppendingString:_timeZoneName];
 
@@ -218,8 +201,39 @@
                  
                  _locationText.text = locationAddress;
                  
-             } else { }
+             } else {
+             _locationText.text = @"We could not retreive an address for these coordinates. Sorry.";
+             }
          }];
+        
+        
+        
+        
+        
+        
+        //Create Observer instance
+        _observer = [[Observer alloc] init];
+        
+        [_observer createObserverWithLatitude:_latitude andLongitude:_longitude andHeading:180
+                                andTimeZoneId:_timeZoneId andTimeZoneName:_timeZoneName
+                                 andDSTOffset:_dstOffset andRawOffset:_rawOffset];
+        
+        Astronomy *astronomy = [[Astronomy alloc] init];
+        
+        
+        NSString *sunSetOffical = [astronomy sunSet:_observer andDate:_date andZenith:_zenith_offical];
+        NSString *sunRise = [astronomy sunRise:_observer andDate:_date andZenith:_zenith_offical];
+        NSString *sunSetCivil = [astronomy sunSet:_observer andDate:_date andZenith:_zenith_civil];
+        NSString *sunSetNautical = [astronomy sunSet:_observer andDate:_date andZenith:_zenith_nautical];
+        NSString *sunSetAstronomical = [astronomy sunSet:_observer andDate:_date andZenith:_zenith_astronomical];
+        
+        _sunriseText.text = sunRise;
+        _officalText.text = sunSetOffical;
+        _civilText.text = sunSetCivil;
+        _nauticalText.text = sunSetNautical;
+        _astonomicalText.text = sunSetAstronomical;
+        
+
         
     [_spinner stopAnimating];
 }
@@ -231,7 +245,7 @@
     // Check the error variable
     
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Connection Error."
-                                                        message:@"Error retrieving data from Google API. You should set values by hand."
+                                                        message:@"Error retrieving data from Google API. Check your connection."
                                                        delegate:nil
                                               cancelButtonTitle:nil
                                               otherButtonTitles:@"Okay", nil];

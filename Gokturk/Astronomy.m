@@ -51,15 +51,22 @@ double pi = 3.14159265358979323846;
     int N3 = (1 + floor(([components year] - 4 * floor([components year] / 4) + 2) / 3));
     int N = N1 - (N2 * N3) + [components day] - 30;
     
+    NSLog(@"N : %i", N);
+    
     
     //    convert the longitude to hour value and calculate an approximate time
-    double lngHour = observer.longitude / 15;
+    double lngHour;
+    lngHour = observer.longitude / 15;
+    NSLog(@"lngHour : %f", lngHour);
     double t;
     if (setOrRise) {
             t = N + ((18 - lngHour) / 24);  //Settimg Time
+        NSLog(@"Sunset t :%f", t);
     } else {
             t = N + ((6 - lngHour) / 24); //Rising Time
+        NSLog(@"Sunrise t :%f", t);
     }
+    
     
     //Calculate the Sun's mean anomaly
     double M = (0.9856 * t) - 3.289;
@@ -72,8 +79,11 @@ double pi = 3.14159265358979323846;
             L += 360;   //First add then assign
         }
     }
+    NSLog(@"L : %f", L);
+    
     //Calculate the Sun's Right Ascension
     double RA = (180/pi) * atan(0.91764 * tan(L * (pi/180)));
+    NSLog(@"RA : %f", RA);
     
     //RA value needs to be in the same quadrant as L
     double LQuadrant = (floor(L/90)) * 90;
@@ -83,13 +93,17 @@ double pi = 3.14159265358979323846;
     //RA value needs to be converted into hours
     RA = RA / 15;
     
+    NSLog(@"RA %f Hours", RA);
+    
     //Calculate the Sun's declination
     double sinDec = 0.39782 * sin(L* (pi/180));
     double cosDec = cos(((180/pi) * asin(sinDec))* (pi/180));
     //Calculate the Sun's local hour angle
-    double zenith = 90.833f;
-    double cosH = (cos(zenith* (pi/180)) - (sinDec * sin(observer.latitude* (pi/180)))) / (cosDec * cos(observer.latitude* (pi/180)));
+    double cosH = (cos(newZenith* (pi/180)) - (sinDec * sin(observer.latitude* (pi/180)))) / (cosDec * cos(observer.latitude* (pi/180)));
     //Finish calculating H and convert into hours
+    
+    NSLog(@"cosH : %f", cosH);
+    
     double H;
     if (setOrRise) {
         H = (180/pi) * acos(cosH);
@@ -102,6 +116,9 @@ double pi = 3.14159265358979323846;
     double T = H + RA - (0.06571 * t) - 6.622;
     //Adjust back to UTC
     double UT = T - lngHour;
+    UT = UT + observer.rawOffset + observer.DSTOffset;
+    NSLog(@"UT Before Conversion : %f", UT);
+
     if (UT>24) {
         UT = UT - 24;
     } else {
@@ -109,12 +126,13 @@ double pi = 3.14159265358979323846;
             UT = UT + 24;
         }
     }
+    NSLog(@"UT After Conversion : %f", UT);
  //do conversion
-    UT = UT + observer.rawOffset + observer.DSTOffset;
+
     NSString *hour = [NSString stringWithFormat:@"%i", (int)floor(UT)];
     NSString *minute = [NSString stringWithFormat:@"%i", (int)((UT - floor(UT))*60)];
-    if ([hour intValue] < 10) {hour = [@"0" stringByAppendingString:hour];}
-    if ([minute intValue] < 10) {minute = [@"0" stringByAppendingString:minute];}
+      if (([hour intValue] < 10) && ([hour intValue] > 0)) {hour = [@"0" stringByAppendingString:hour];}
+      if ([minute intValue] < 10) {minute = [@"0" stringByAppendingString:minute];}
     return [hour stringByAppendingString:[@":" stringByAppendingString:minute]];
 }
 @end
